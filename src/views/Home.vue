@@ -1,18 +1,39 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+    <b-container>
+      <b-row>
+        <pokemon-item v-for="item in datos" :key="item.name" :datos="item"></pokemon-item>
+      </b-row>
+    </b-container>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import axios from "axios";
+
+const URL_API = "https://pokeapi.co/api/v2/pokemon/";
+
+import pokemonItem from "@/components/PokemonItem.vue";
 
 export default {
   name: "Home",
   components: {
-    HelloWorld,
+    "pokemon-item": pokemonItem,
+  },
+  data() {
+    return { datos: [] };
+  },
+  methods: {
+    async getPokemon() {
+      await axios.get(URL_API).then((response) => {
+        this.datos = response.data.results;
+        //console.log(response.data.results);
+      });
+    },
+  },
+  created() {
+    this.getPokemon();
   },
 };
 </script>
